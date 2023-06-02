@@ -52,6 +52,20 @@
         text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
     }
 
+    form :global(label) {
+        display: block;
+        font-weight: 300;
+        color: #fff;
+        opacity: 0.7;
+        font-size: 1em;
+        margin-top: 0;
+        margin-bottom: 10px;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        text-align: left;
+        width: 100%;
+        padding-left: 1em;
+    }
+
     form :global(p[name='error']) {
         color: red;
         margin-bottom: 20px;
@@ -73,6 +87,7 @@
     }
 
     form :global(input),
+    form :global(textarea),
     form :global(button) {
         box-sizing: border-box;
         background: transparent;
@@ -93,20 +108,29 @@
         text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
     }
 
-    form :global(input) {
+    form :global(input),
+    form :global(textarea) {
         width: 100%;
     }
 
+    form :global(textarea) {
+        border-radius: 1.5em;
+        resize: none;
+    }
+
     form :global(input):hover,
-    form :global(button):hover {
+    form :global(button):hover,
+    form :global(textarea):hover {
         background: rgba(255, 255, 255, 0.1);
         box-shadow: 4px 4px 60px 8px rgba(0, 0, 0, 0.2);
     }
 
     form :global(input):focus,
-    form :global(input):focus {
+    form :global(input):focus,
+    form :global(textarea):focus {
         background: rgba(255, 255, 255, 0.1);
         box-shadow: 4px 4px 60px 8px rgba(0, 0, 0, 0.2);
+        outline: none;
     }
 
     form :global(button) {
@@ -116,12 +140,14 @@
     }
 
     form :global(input):hover,
-    form :global(button):hover {
+    form :global(button):hover,
+    form :global(textarea):hover {
         cursor: pointer;
     }
 
     form :global(input):active,
-    form :global(button):active {
+    form :global(button):active,
+    form :global(textarea):active {
         background: rgba(255, 255, 255, 0.2);
     }
 

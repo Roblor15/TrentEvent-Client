@@ -1,7 +1,6 @@
 <script>
     import Form from '../../lib/Form.svelte'
-
-    const server = 'http://localhost:3000'
+    import { url } from '../../lib/variables'
 
     let type = 'login'
     let login = { username: '', password: '' }
@@ -25,7 +24,7 @@
     async function sendRequest() {
         if (type === 'login') {
             try {
-                let res = await fetch(server + '/v1/users/login', {
+                let res = await fetch(url + '/users/login', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -44,7 +43,8 @@
                     error.type = ''
                 }
             } catch (e) {
-                error = e.toString()
+                error.type = 'login'
+                error.message = e.toString()
             }
         } else if (type === 'participant') {
             let [year, month, day] = signupParticipant.birthDate.split('-').map((s) => parseInt(s))
@@ -52,7 +52,7 @@
             signupParticipant.birthDate = { year, month, day }
 
             try {
-                let res = await fetch(server + '/v1/users/signup-user', {
+                let res = await fetch(url + '/users/signup-user', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -71,7 +71,8 @@
                     error.type = ''
                 }
             } catch (e) {
-                error = e.toString()
+                error.type = 'participant'
+                error.message = e.toString()
             }
         } else if (type === 'manager') {
             try {
@@ -86,7 +87,7 @@
                     formData.append('photos', image)
                 }
 
-                let res = await fetch(server + '/v1/users/signup-manager', {
+                let res = await fetch(url + '/users/signup-manager', {
                     method: 'POST',
                     body: formData
                 })
@@ -102,7 +103,8 @@
                     error.type = ''
                 }
             } catch (e) {
-                error = e.toString()
+                error.type = 'manager'
+                error.message = e.toString()
             }
         }
     }
@@ -225,7 +227,13 @@
                     placeholder="Password"
                     bind:value={signupParticipant.password}
                 />
-                <input type="date" required bind:value={signupParticipant.birthDate} />
+                <label for="birthDate">Data di nascita</label>
+                <input
+                    name="birthDate"
+                    type="date"
+                    required
+                    bind:value={signupParticipant.birthDate}
+                />
             </div>
         {/if}
         <button type="submit">Submit</button>
