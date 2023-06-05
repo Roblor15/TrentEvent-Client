@@ -3,7 +3,7 @@
     import { url } from '../../lib/variables'
     import { getContext } from 'svelte'
 
-    let typeUser = getContext('typeUser')
+    let userType = getContext('userType')
 
     let event = {
         initDate: undefined,
@@ -50,7 +50,7 @@
     <title>TrentEvent - Crea Evento</title>
 </svelte:head>
 <div class="container">
-    {#if $typeUser === 'Manager'}
+    {#if $userType === 'Manager'}
         <Form on:submit={sendRequest}>
             <p>Crea un evento</p>
             {#if error}
@@ -73,7 +73,7 @@
             <button type="submit">Crea Evento</button>
         </Form>
     {:else}
-        <p>Non sei autorizzato a creare eventi</p>
+        <p class="message">Non sei autorizzato a creare eventi</p>
     {/if}
 </div>
 
@@ -85,9 +85,12 @@
         align-items: center;
         justify-content: center;
         padding: 3em 0;
-        background: linear-gradient(45deg, rgb(22, 17, 17), rgb(90, 90, 90));
-        min-height: calc(100vh - 6em);
+        min-height: calc(100vh - 6em - 5em);
         height: fit-content;
         font-family: 'Montserrat', sans-serif;
+    }
+
+    .message {
+        color: #fcfcfc;
     }
 </style>

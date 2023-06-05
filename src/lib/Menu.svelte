@@ -1,12 +1,33 @@
 <script>
     import MenuIcon from './MenuIcon.svelte'
     import { page } from '$app/stores'
+    import { getContext } from 'svelte'
+
+    let userType = getContext('userType')
 
     let IconAttivo = false
-    let links = [
-        { link: '/', name: 'Home' },
-        { link: '/accesso', name: 'Accesso' }
-    ]
+    let links
+
+    $: {
+        if ($userType === '') {
+            links = [
+                { link: '/', name: 'Home' },
+                { link: '/accesso', name: 'Accesso' }
+            ]
+        } else if ($userType === 'Participant') {
+            links = [
+                { link: '/', name: 'Home' },
+                { link: '/area-riservata', name: 'Area Riservata' },
+                { link: '/crea-evento-privato', name: 'Crea evento privato' },
+                { link: '/iscrizioni', name: 'Iscrizioni' }
+            ]
+        } else if ($userType === 'Manager') {
+            links = [
+                { link: '/', name: 'Home' },
+                { link: '/crea-evento', name: 'Crea evento privato' }
+            ]
+        }
+    }
 
     const styleColors = {
         navBackgroundColor: '#1a202d',
@@ -41,7 +62,19 @@
                 </li>
             {/each}
         </ul>
-        <a href="/accesso" button=""><div>Accedi</div></a>
+        {#if $userType === ''}
+            <a href="/accesso" button=""><div>Accedi</div></a>
+        {:else}
+            <a
+                href="/"
+                button=""
+                colored=""
+                on:click={() => {
+                    userType.set('')
+                    sessionStorage.clear()
+                }}><div>Log out</div></a
+            >
+        {/if}
     </div>
 </nav>
 
@@ -74,6 +107,15 @@
         margin: 0 2em 0 3em;
     }
 
+    a[button][colored] {
+        --generate-button-shadow-inset: rgba(255, 255, 255, 0.7);
+        background: linear-gradient(-60deg, var(--navtext-color-underline), #ff3c00);
+        box-shadow: 0 0 30px #ff3c0079, 0 4px 12px rgba(0, 0, 0, 0.05),
+            0 0 0 4px rgba(150, 0, 255, 0.3),
+            inset 0 1px 1px var(--generate-button-shadow-inset, rgba(255, 255, 255, 0.1)),
+            0 0 0 var(--generate-button-shadow-outline, 0) rgba(109, 68, 244, 0.4);
+    }
+
     a[button]:hover {
         transform: scale(1);
         --generate-button-shadow-inset: rgba(255, 255, 255, 0.7);
@@ -99,6 +141,10 @@
         justify-content: center;
         font-size: large;
         transition: color 0.3s;
+    }
+
+    a[button][colored] div {
+        color: var(--navtext-color-selected);
     }
 
     .container {
@@ -246,55 +292,6 @@
         }
     }
 
-    .social {
-        order: 2;
-        gap: 1rem;
-        z-index: 2;
-        padding: 0;
-        margin: 0;
-        position: fixed;
-        left: 20px;
-        bottom: 20px;
-    }
-
-    .social a {
-        height: 32px;
-        fill: var(--navtext-color-open);
-    }
-
-    @media (min-width: 340px) {
-        .social {
-            position: initial;
-            margin-left: 1.6em;
-            padding-bottom: 0.1em;
-        }
-    }
-
-    @media (min-width: 1000px) {
-        .social {
-            display: flex;
-            gap: 2rem;
-            margin-left: auto;
-            margin-right: 40px;
-            order: initial;
-            padding-bottom: 0;
-        }
-
-        .social [class^='menu-icona'] {
-            width: 32px;
-            height: 32px;
-        }
-
-        .social a {
-            height: 32px;
-            fill: var(--navtext-color-open);
-        }
-
-        .social a:hover {
-            fill: var(--navtext-color-selected);
-        }
-    }
-
     .corrente {
         color: var(--navtext-color-selected-open);
         font-weight: bold;
@@ -312,22 +309,6 @@
         .corrente {
             color: var(--navtext-color-selected);
         }
-    }
-
-    .scroll {
-        height: 3.5em;
-    }
-
-    .scroll .menuIcon {
-        transform: scale(0.8);
-    }
-
-    .scroll .logo {
-        transform: scale(0.8);
-    }
-
-    .scroll .buttonFiltri {
-        transform: scale(0.8);
     }
 
     @keyframes sottolineatura {

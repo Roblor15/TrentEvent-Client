@@ -1,8 +1,12 @@
 <script>
     import { goto } from '$app/navigation'
+    import { getContext } from 'svelte'
 
     import Form from '../../lib/Form.svelte'
+    import { decode } from '../../lib/general'
     import { url } from '../../lib/variables'
+
+    let userType = getContext('userType')
 
     let type = 'login'
     let login = { credential: '', password: '' }
@@ -41,7 +45,9 @@
                         error.type = 'login'
                         error.message = json.message
                     } else {
-                        sessionStorage.setItem('token', json.token)
+                        let token = json.token
+                        sessionStorage.setItem('token', token)
+                        userType.set(decode(token).type)
                         goto('/')
                     }
                 } else if (res.headers.get('content-type').includes('application/json')) {
