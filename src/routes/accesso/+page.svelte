@@ -1,9 +1,11 @@
 <script>
+    import { goto } from '$app/navigation'
+
     import Form from '../../lib/Form.svelte'
     import { url } from '../../lib/variables'
 
     let type = 'login'
-    let login = { username: '', password: '' }
+    let login = { credential: '', password: '' }
     let signupManager = {
         localName: '',
         email: '',
@@ -20,6 +22,7 @@
     }
 
     let error = { type: '', message: '' }
+    let message = ''
 
     async function sendRequest() {
         if (type === 'login') {
@@ -31,16 +34,24 @@
                     },
                     body: JSON.stringify(login)
                 })
+                if (res.status === 200) {
+                    let json = await res.json()
 
-                let json = await res.json()
+                    if (!json.success) {
+                        error.type = 'login'
+                        error.message = json.message
+                    } else {
+                        sessionStorage.setItem('token', json.token)
+                        goto('/')
+                    }
+                } else if (res.headers.get('content-type').includes('application/json')) {
+                    let json = await res.json()
 
-                console.log(json)
-
-                if (!json.success) {
                     error.type = 'login'
                     error.message = json.message
                 } else {
-                    error.type = ''
+                    error.type = 'login'
+                    error.message = 'Internal Error'
                 }
             } catch (e) {
                 error.type = 'login'
@@ -57,18 +68,28 @@
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify(signupParticipant)
+                    body: JSON.stringify({ ...signupParticipant, sendEmail: true })
                 })
 
-                let json = await res.json()
+                if (res.status === 200) {
+                    let json = await res.json()
 
-                console.log(json)
+                    if (!json.success) {
+                        error.type = 'participant'
+                        error.message = json.message
+                    } else {
+                        type = login
+                        message =
+                            'La registrazione è andata a buon fine, ti è stata inviata una email di conferma. Nel frattempo effetua il login.'
+                    }
+                } else if (res.headers.get('content-type').includes('application/json')) {
+                    let json = await res.json()
 
-                if (!json.success) {
                     error.type = 'participant'
                     error.message = json.message
                 } else {
-                    error.type = ''
+                    error.type = 'participant'
+                    error.message = 'Internal Error'
                 }
             } catch (e) {
                 error.type = 'participant'
@@ -80,6 +101,7 @@
 
                 formData.append('localName', signupManager.localName)
                 formData.append('email', signupManager.email)
+                formData.append('sendEmail', 'true')
                 formData.append('address', JSON.stringify(signupManager.address))
                 formData.append('localType', signupManager.localType)
 
@@ -92,15 +114,24 @@
                     body: formData
                 })
 
-                let json = await res.json()
+                if (res.status === 200) {
+                    let json = await res.json()
 
-                console.log(json)
+                    if (!json.success) {
+                        error.type = 'manager'
+                        error.message = json.message
+                    } else {
+                        message =
+                            'La tua inscrizione è stata presa in considerazione, conferma il tuo indirizzo email e in seguito verrai ricontattato'
+                    }
+                } else if (res.headers.get('content-type').includes('application/json')) {
+                    let json = await res.json()
 
-                if (!json.success) {
                     error.type = 'manager'
                     error.message = json.message
                 } else {
-                    error.type = ''
+                    error.type = 'manager'
+                    error.message = 'Internal Error'
                 }
             } catch (e) {
                 error.type = 'manager'
@@ -110,17 +141,31 @@
     }
 </script>
 
+<svelte:head>
+    <title>TrentEvent - Accesso</title>
+</svelte:head>
 <div class="container">
     <div class="selection">
-        <button class={type === 'login' ? 'active' : ''} on:click={() => (type = 'login')}
-            >Login</button
+        <button
+            class={type === 'login' ? 'active' : ''}
+            on:click={() => {
+                type = 'login'
+                message = ''
+            }}>Login</button
         >
         <button
             class={type === 'participant' ? 'active' : ''}
-            on:click={() => (type = 'participant')}>Sign up Utente</button
+            on:click={() => {
+                type = 'participant'
+                message = ''
+            }}>Sign up Utente</button
         >
-        <button class={type === 'manager' ? 'active' : ''} on:click={() => (type = 'manager')}
-            >Sign up Gestore eventi</button
+        <button
+            class={type === 'manager' ? 'active' : ''}
+            on:click={() => {
+                type = 'manager'
+                message = ''
+            }}>Sign up Gestore eventi</button
         >
     </div>
 
@@ -131,7 +176,12 @@
                 {#if error.type === 'login'}
                     <p name="error">{error.message}</p>
                 {/if}
-                <input type="text" required placeholder="Username" bind:value={login.username} />
+                <input
+                    type="text"
+                    required
+                    placeholder="Username o Email"
+                    bind:value={login.credential}
+                />
                 <input
                     type="password"
                     required
@@ -238,6 +288,9 @@
         {/if}
         <button type="submit">Submit</button>
     </Form>
+    {#if message}
+        <p name="message">{message}</p>
+    {/if}
 </div>
 
 <style>
@@ -247,8 +300,7 @@
         gap: 100px;
         align-items: center;
         padding: 3em 0;
-        background: linear-gradient(45deg, rgb(22, 17, 17), rgb(90, 90, 90));
-        min-height: calc(100vh - 6em);
+        min-height: calc(100% - 6em);
         height: fit-content;
         font-family: 'Montserrat', sans-serif;
     }
@@ -265,9 +317,8 @@
         border-radius: 10px;
         border: 1px solid rgba(255, 255, 255, 0.3);
         box-shadow: 10px 10px 60px -8px rgba(0, 0, 0, 0.2);
-        transition: all 0.2s ease;
         padding: 1em;
-        transition: background 0.2s ease-in-out;
+        transition: background-color 0.3s ease-in-out;
     }
 
     .selection button:hover:not(.active) {
@@ -277,6 +328,13 @@
     }
 
     .selection .active {
-        background: rgba(0, 255, 255, 0.8);
+        background: #ffc83cc4;
+    }
+
+    p[name='message'] {
+        padding: 0 1em;
+        color: #fff;
+        opacity: 0.7;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
     }
 </style>

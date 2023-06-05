@@ -1,5 +1,4 @@
 <script>
-    // TODO: aggiungere campi da visualizzare
     export let event
 
     console.log(event)
@@ -19,6 +18,18 @@
         <div>
             <h1>Età minima</h1>
             <span>{event.limitAge}</span>
+        </div>
+        <div>
+            <h1>Posizione</h1>
+            <span>{event.address.country}</span>
+        </div>
+        <div>
+            <h1>Posti disponibili</h1>
+            <span>{event.address.country}</span>
+        </div>
+        <div>
+            <h1>Quando</h1>
+            <span>{event.address.country}</span>
         </div>
     </div>
 </div>

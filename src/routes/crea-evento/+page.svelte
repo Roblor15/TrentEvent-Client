@@ -1,6 +1,9 @@
 <script>
     import Form from '../../lib/Form.svelte'
     import { url } from '../../lib/variables'
+    import { getContext } from 'svelte'
+
+    let typeUser = getContext('typeUser')
 
     let event = {
         initDate: undefined,
@@ -12,7 +15,6 @@
         description: undefined,
         categories: undefined
     }
-    console.log(url)
 
     let error = ''
 
@@ -26,11 +28,8 @@
                 body: JSON.stringify(event)
             })
 
-            console.log(res.headers)
             if (res.status === 200) {
                 let json = await res.json()
-
-                console.log(json)
 
                 if (!json.success) {
                     error = json.message
@@ -47,28 +46,35 @@
     }
 </script>
 
+<svelte:head>
+    <title>TrentEvent - Crea Evento</title>
+</svelte:head>
 <div class="container">
-    <Form on:submit={sendRequest}>
-        <p>Crea un evento</p>
-        {#if error}
-            <p name="error">{error}</p>
-        {/if}
-        <input type="text" required placeholder="Nome evento" bind:value={event.name} />
-        <textarea
-            rows="8"
-            required
-            placeholder="Breve Descrizione"
-            bind:value={event.description}
-        />
-        <input type="number" placeholder="Limite di età" bind:value={event.ageLimit} />
-        <input type="number" placeholder="Limite di persone" bind:value={event.limitPeople} />
-        <input type="number" placeholder="Prezzo in euro" bind:value={event.price} />
-        <label for="initDate">Data di inizio</label>
-        <input name="initDate" type="datetime-local" required bind:value={event.initDate} />
-        <label for="endDate">Data di fine</label>
-        <input naem="endDate" type="datetime-local" required bind:value={event.endDate} />
-        <button type="submit">Crea Evento</button>
-    </Form>
+    {#if $typeUser === 'Manager'}
+        <Form on:submit={sendRequest}>
+            <p>Crea un evento</p>
+            {#if error}
+                <p name="error">{error}</p>
+            {/if}
+            <input type="text" required placeholder="Nome evento" bind:value={event.name} />
+            <textarea
+                rows="8"
+                required
+                placeholder="Breve Descrizione"
+                bind:value={event.description}
+            />
+            <input type="number" placeholder="Limite di età" bind:value={event.ageLimit} />
+            <input type="number" placeholder="Limite di persone" bind:value={event.limitPeople} />
+            <input type="number" placeholder="Prezzo in euro" bind:value={event.price} />
+            <label for="initDate">Data di inizio</label>
+            <input name="initDate" type="datetime-local" required bind:value={event.initDate} />
+            <label for="endDate">Data di fine</label>
+            <input naem="endDate" type="datetime-local" required bind:value={event.endDate} />
+            <button type="submit">Crea Evento</button>
+        </Form>
+    {:else}
+        <p>Non sei autorizzato a creare eventi</p>
+    {/if}
 </div>
 
 <style>

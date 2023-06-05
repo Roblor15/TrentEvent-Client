@@ -102,8 +102,8 @@
         color: #fff;
         font-family: Montserrat, sans-serif;
         font-weight: 500;
-        transition-property: background, box-shadow;
-        transition-duration: 0.2s;
+        transition-property: background-color, box-shadow;
+        transition-duration: 0.3s;
         transition-timing-function: ease-in-out;
         text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
     }
@@ -119,13 +119,12 @@
     }
 
     form :global(input):hover,
-    form :global(button):hover,
     form :global(textarea):hover {
         background: rgba(255, 255, 255, 0.1);
         box-shadow: 4px 4px 60px 8px rgba(0, 0, 0, 0.2);
+        cursor: pointer;
     }
 
-    form :global(input):focus,
     form :global(input):focus,
     form :global(textarea):focus {
         background: rgba(255, 255, 255, 0.1);
@@ -137,16 +136,22 @@
         margin-top: 10px;
         width: 150px;
         font-size: 1rem;
+        transform: scale(0.95);
+        transition: transform 0.3s ease-in-out;
     }
 
-    form :global(input):hover,
-    form :global(button):hover,
-    form :global(textarea):hover {
+    form :global(button):hover {
+        transform: scale(1);
         cursor: pointer;
+        --generate-button-shadow-inset: rgba(255, 255, 255, 0.7);
+        background: linear-gradient(-60deg, #ffcd49, #ff3c00);
+        box-shadow: 0 0 30px #ff3c0079, 0 4px 12px rgba(0, 0, 0, 0.05),
+            0 0 0 4px rgba(150, 0, 255, 0.3),
+            inset 0 1px 1px var(--generate-button-shadow-inset, rgba(255, 255, 255, 0.1)),
+            0 0 0 var(--generate-button-shadow-outline, 0) rgba(109, 68, 244, 0.4);
     }
 
     form :global(input):active,
-    form :global(button):active,
     form :global(textarea):active {
         background: rgba(255, 255, 255, 0.2);
     }
