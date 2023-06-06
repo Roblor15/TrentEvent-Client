@@ -6,6 +6,12 @@
     import { decode } from '../../lib/general'
     import { url } from '../../lib/variables'
 
+    let types = [
+        { type: 'bar', text: 'Bar' },
+        { type: 'discoteca', text: 'Discoteca' },
+        { type: 'pub', text: 'Pub' }
+    ]
+
     let userType = getContext('userType')
 
     let type = 'login'
@@ -46,7 +52,7 @@
                         error.message = json.message
                     } else {
                         let token = json.token
-                        sessionStorage.setItem('token', token)
+                        localStorage.setItem('token', token)
                         userType.set(decode(token).type)
                         goto('/')
                     }
@@ -66,7 +72,7 @@
         } else if (type === 'participant') {
             let [year, month, day] = signupParticipant.birthDate.split('-').map((s) => parseInt(s))
 
-            signupParticipant.birthDate = { year, month, day }
+            let birthDate = { year, month, day }
 
             try {
                 let res = await fetch(url + '/users/signup-user', {
@@ -74,7 +80,12 @@
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({ ...signupParticipant, sendEmail: true })
+                    body: JSON.stringify({
+                        ...signupParticipant,
+                        birthDate,
+                        sendEmail: true,
+                        linkConfermation: window.location.origin + '/conferma-email'
+                    })
                 })
 
                 if (res.status === 200) {
@@ -87,6 +98,7 @@
                         type = login
                         message =
                             'La registrazione è andata a buon fine, ti è stata inviata una email di conferma. Nel frattempo effetua il login.'
+                        signupParticipant = {}
                     }
                 } else if (res.headers.get('content-type').includes('application/json')) {
                     let json = await res.json()
@@ -108,6 +120,7 @@
                 formData.append('localName', signupManager.localName)
                 formData.append('email', signupManager.email)
                 formData.append('sendEmail', 'true')
+                formData.append('linkConfermation', window.location.origin + '/conferma-email')
                 formData.append('address', JSON.stringify(signupManager.address))
                 formData.append('localType', signupManager.localType)
 
@@ -127,6 +140,7 @@
                         error.type = 'manager'
                         error.message = json.message
                     } else {
+                        signupManager = {}
                         message =
                             'La tua inscrizione è stata presa in considerazione, conferma il tuo indirizzo email e in seguito verrai ricontattato'
                     }
@@ -209,12 +223,12 @@
                     bind:value={signupManager.localName}
                 />
                 <input type="email" required placeholder="Email" bind:value={signupManager.email} />
-                <input
-                    type="text"
-                    required
-                    placeholder="Tipo di Locale"
-                    bind:value={signupManager.localType}
-                />
+                <select required bind:value={signupManager.localType}>
+                    <option value="" hidden default>Tipo di Locale</option>
+                    {#each types as type}
+                        <option value={type.type}>{type.text}</option>
+                    {/each}
+                </select>
                 <input
                     type="text"
                     required

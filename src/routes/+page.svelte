@@ -10,7 +10,14 @@
     let events = []
 
     onMount(async () => {
-        let res = await fetch(url + '/events')
+        if ($userType !== 'Manager') {
+            let res = await fetch(url + '/events')
+
+            if (res.status === 200) {
+                let json = await res.json()
+                events = json.events
+            }
+        }
     })
 </script>
 
@@ -18,8 +25,8 @@
     <title>TrentEvent</title>
 </svelte:head>
 
-<div>
-    {#if userType === 'Manager'}
+<div class="container">
+    {#if $userType === 'Manager'}
         <ManagerHome />
     {:else}
         <div class="events">
@@ -29,3 +36,10 @@
         </div>
     {/if}
 </div>
+
+<style>
+    .container {
+        padding: 3em 0;
+        min-height: calc(100vh - 6em - 5em);
+    }
+</style>

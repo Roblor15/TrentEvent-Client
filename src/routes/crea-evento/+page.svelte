@@ -13,8 +13,16 @@
         limitPeople: undefined,
         price: undefined,
         description: undefined,
-        categories: undefined
+        categories: []
     }
+
+    let categories = [
+        { type: 'musica', text: 'Musica' },
+        { type: 'discoteca', text: 'Discoteca' },
+        { type: "all'aperto", text: "All'aperto" },
+        { type: 'al chiuso', text: 'Al chiuso' },
+        { type: 'concerto', text: 'Concerto' }
+    ]
 
     let error = ''
 
@@ -23,7 +31,8 @@
             let res = await fetch(url + '/events', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    Authorization: 'Bearer ' + localStorage.getItem('token')
                 },
                 body: JSON.stringify(event)
             })
@@ -33,6 +42,8 @@
 
                 if (!json.success) {
                     error = json.message
+                } else {
+                    error = ''
                 }
             } else if (res.headers.get('content-type').includes('application/json')) {
                 let json = await res.json()
@@ -69,7 +80,15 @@
             <label for="initDate">Data di inizio</label>
             <input name="initDate" type="datetime-local" required bind:value={event.initDate} />
             <label for="endDate">Data di fine</label>
-            <input naem="endDate" type="datetime-local" required bind:value={event.endDate} />
+            <input name="endDate" type="datetime-local" required bind:value={event.endDate} />
+
+            <label for="categories">Categorie dell'evento</label>
+            <select name="categories" multiple bind:value={event.categories}>
+                {#each categories as category}
+                    <option value={category.type}>{category.text}</option>
+                {/each}
+            </select>
+
             <button type="submit">Crea Evento</button>
         </Form>
     {:else}

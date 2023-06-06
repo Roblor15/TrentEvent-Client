@@ -88,6 +88,7 @@
 
     form :global(input),
     form :global(textarea),
+    form :global(select),
     form :global(button) {
         box-sizing: border-box;
         background: transparent;
@@ -109,8 +110,15 @@
     }
 
     form :global(input),
-    form :global(textarea) {
+    form :global(textarea),
+    form :global(select) {
         width: 100%;
+    }
+
+    form :global(select[multiple]) {
+        border-radius: 10px;
+        padding-top: 0;
+        padding-bottom: 0;
     }
 
     form :global(textarea) {
@@ -119,14 +127,16 @@
     }
 
     form :global(input):hover,
-    form :global(textarea):hover {
+    form :global(textarea):hover,
+    form :global(select):hover {
         background: rgba(255, 255, 255, 0.1);
         box-shadow: 4px 4px 60px 8px rgba(0, 0, 0, 0.2);
         cursor: pointer;
     }
 
     form :global(input):focus,
-    form :global(textarea):focus {
+    form :global(textarea):focus,
+    form :global(select):focus {
         background: rgba(255, 255, 255, 0.1);
         box-shadow: 4px 4px 60px 8px rgba(0, 0, 0, 0.2);
         outline: none;
@@ -152,7 +162,8 @@
     }
 
     form :global(input):active,
-    form :global(textarea):active {
+    form :global(textarea):active,
+    form :global(select):active {
         background: rgba(255, 255, 255, 0.2);
     }
 

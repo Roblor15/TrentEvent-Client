@@ -24,7 +24,7 @@
         } else if ($userType === 'Manager') {
             links = [
                 { link: '/', name: 'Home' },
-                { link: '/crea-evento', name: 'Crea evento privato' }
+                { link: '/crea-evento', name: 'Crea evento' }
             ]
         }
     }
@@ -71,7 +71,7 @@
                 colored=""
                 on:click={() => {
                     userType.set('')
-                    sessionStorage.clear()
+                    localStorage.clear()
                 }}><div>Log out</div></a
             >
         {/if}

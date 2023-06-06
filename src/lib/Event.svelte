@@ -12,21 +12,22 @@
             <span>{event.name}</span>
         </div>
         <div>
-            <h1>Iscritti</h1>
-            <span>Da implementare</span>
+            <h1>Età minima</h1>
+            <span>{event.ageLimit > 0 ? event.ageLimit : '-'}</span>
         </div>
         <div>
-            <h1>Età minima</h1>
-            <span>{event.limitAge}</span>
+            <h1>Iscrizioni</h1>
+            <span>{event.participants}{event.limitPeople > 0 ? '/' + event.limitPeople : ''}</span>
+        </div>
+        <div>
+            <h1>Prezzo</h1>
+            <span>{event.price > 0 ? event.price + ' €' : '-'}</span>
         </div>
         <div>
             <h1>Posizione</h1>
-            <span>{event.address.country}</span>
+            <span>{event.address.country}, {event.address.street} {event.address.number}</span>
         </div>
-        <div>
-            <h1>Posti disponibili</h1>
-            <span>{event.address.country}</span>
-        </div>
+
         <div>
             <h1>Quando</h1>
             <span>{event.address.country}</span>

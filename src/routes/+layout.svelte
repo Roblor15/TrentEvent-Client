@@ -10,7 +10,7 @@
 
     setContext('userType', userType)
     onMount(async () => {
-        let token = sessionStorage.getItem('token')
+        let token = localStorage.getItem('token')
 
         if (token) {
             let res = await fetch(url + '/users/valid-token', {
