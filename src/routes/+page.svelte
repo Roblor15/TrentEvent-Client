@@ -42,4 +42,31 @@
         padding: 3em 0;
         min-height: calc(100vh - 6em - 5em);
     }
+
+    .events {
+        width: 100%;
+        display: grid;
+        justify-content: space-around;
+        row-gap: 50px;
+        padding-bottom: 4em;
+        height: fit-content;
+    }
+
+    @media (min-width: 700px) {
+        .events {
+            grid-template-columns: max-content max-content;
+        }
+    }
+
+    @media (min-width: 1400px) {
+        .events {
+            grid-template-columns: max-content max-content max-content;
+        }
+    }
+
+    @media (min-width: 1800px) {
+        .events {
+            grid-template-columns: max-content max-content max-content max-content;
+        }
+    }
 </style>

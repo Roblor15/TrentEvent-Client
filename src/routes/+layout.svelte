@@ -33,5 +33,11 @@
 <style>
     :global(body) {
         background-color: #1a202d;
+        --navbackground-color: #1a202d;
+        --navtext-color-selected: #fcfcfc;
+        --navtext-color-open: 'red';
+        --navtext-color: #a3a7b5;
+        --navtext-color-selected-open: 'red';
+        --navtext-color-underline: #ffcd49;
     }
 </style>

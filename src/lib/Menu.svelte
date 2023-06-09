@@ -28,21 +28,9 @@
             ]
         }
     }
-
-    const styleColors = {
-        navBackgroundColor: '#1a202d',
-        navTextColorSelected: '#fcfcfc',
-        navTextColorOpen: 'red',
-        navTextColor: '#a3a7b5',
-        navTextColorSelectedOpen: 'red',
-        navTextColorUnderline: '#ffcd49'
-    }
 </script>
 
-<nav
-    class="container"
-    style={`--navbackground-color:${styleColors.navBackgroundColor}; --navtext-color-selected:${styleColors.navTextColorSelected}; --navtext-color-open: ${styleColors.navTextColorOpen}; --navtext-color: ${styleColors.navTextColor}; --navtext-color-selected-open: ${styleColors.navTextColorSelectedOpen}; --navtext-color-underline: ${styleColors.navTextColorUnderline}`}
->
+<nav class="container">
     <div class="menu">
         <MenuIcon class="menuIcon" active={IconAttivo} />
         <div class="logo">
