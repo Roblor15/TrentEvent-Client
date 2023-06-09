@@ -1,4 +1,6 @@
 <script>
+    import { convertDate } from './general'
+
     export let event
 
     $: console.log(event)
@@ -17,7 +19,7 @@
             </div>
             <div>
                 <h1>Quando</h1>
-                <span>{event.initDate}</span>
+                <span>{convertDate(event.initDate)}</span>
             </div>
             <div class="caratteristiche">
                 <div class="price">

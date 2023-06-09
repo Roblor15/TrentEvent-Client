@@ -27,7 +27,7 @@
 
 <div class="container">
     {#if $userType === 'Manager'}
-        <ManagerHome />
+        <ManagerHome isManager />
     {:else}
         <div class="events">
             {#each events as event (event._id)}

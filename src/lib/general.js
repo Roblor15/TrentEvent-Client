@@ -1,7 +1,7 @@
 export function decode(token) {
-    var base64Url = token.split('.')[1]
-    var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/')
-    var jsonPayload = decodeURIComponent(
+    let base64Url = token.split('.')[1]
+    let base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/')
+    let jsonPayload = decodeURIComponent(
         window
             .atob(base64)
             .split('')
@@ -12,4 +12,27 @@ export function decode(token) {
     )
 
     return JSON.parse(jsonPayload)
+}
+
+export function convertDate(data, data2 = undefined) {
+    let d = new Date(data)
+    let res
+    if (data2) {
+        let d2 = new Date(data2)
+        if (d.getDate() === d2.getDate()) {
+            res =
+                d.toLocaleString('it-IT', { timeStyle: 'short', dateStyle: 'medium' }) +
+                ' - ' +
+                d2.toLocaleString('it-IT', { timeStyle: 'short' })
+        } else {
+            res =
+                d.toLocaleString('it-IT', { timeStyle: 'short', dateStyle: 'medium' }) +
+                ' - ' +
+                d2.toLocaleString('it-IT', { timeStyle: 'short', dateStyle: 'medium' })
+        }
+    } else {
+        res = d.toLocaleString('it-IT', { timeStyle: 'short', dateStyle: 'medium' })
+    }
+
+    return res
 }

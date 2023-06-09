@@ -1,9 +1,12 @@
 <script>
+    // TODO: iscrizione e discrizione
+
     import { getContext, onMount } from 'svelte'
     import { goto } from '$app/navigation'
 
     import Form from '../../../lib/Form.svelte'
     import { url } from '../../../lib/variables'
+    import { convertDate } from '../../../lib/general'
 
     const userType = getContext('userType')
 
@@ -11,8 +14,6 @@
 
     let modifyEvent
     let address
-
-    $: console.log(modifyEvent)
 
     const getEvent = async () => {
         try {
@@ -74,8 +75,8 @@
                 if (!json.success) {
                     error = json.message
                 } else {
-                    goto('/evento/' + data.id)
                     promise = getEvent()
+                    goto('/evento/' + data.id)
                 }
             } else if (res.headers.get('content-type').includes('application/json')) {
                 let json = await res.json()
@@ -97,7 +98,9 @@
         <div class="container">
             <div class="title">
                 <h1>{event.name}</h1>
-                <a href="" button><div>Pagina Locale</div></a>
+                {#if $userType !== 'Manager'}
+                    <a href={'/locale/' + event.manager} button><div>Locale</div></a>
+                {/if}
                 <p>{event.description}</p>
             </div>
             <div class="infos">
@@ -120,23 +123,23 @@
                 </div>
                 <div>
                     <h2>Data</h2>
-                    <span />
+                    <span>{convertDate(event.initDate, event.endDate)}</span>
                 </div>
                 <div>
                     <h2>Iscrizioni</h2>
                     <span
-                        >{event?.participants}{event?.limitPeople > 0
-                            ? '/' + event?.limitPeople
+                        >{event.participants}{event.limitPeople > 0
+                            ? '/' + event.limitPeople
                             : ''}</span
                     >
                 </div>
                 <div>
                     <h2>Età minima</h2>
-                    <span>{event?.ageLimit > 0 ? event?.ageLimit : '-'}</span>
+                    <span>{event.ageLimit > 0 ? event.ageLimit : '-'}</span>
                 </div>
                 <div>
                     <h2>Prezzo</h2>
-                    <span>{event?.price > 0 ? event?.price + ' €' : '-'}</span>
+                    <span>{event.price > 0 ? event.price + ' €' : '-'}</span>
                 </div>
             </div>
             {#if $userType === 'Participant'}
