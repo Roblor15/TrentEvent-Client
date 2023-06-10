@@ -1,7 +1,7 @@
 <script>
     // TODO: iscrizione e discrizione
 
-    import { getContext, onMount } from 'svelte'
+    import { getContext } from 'svelte'
     import { goto } from '$app/navigation'
 
     import Form from '../../../lib/Form.svelte'
@@ -18,7 +18,7 @@
     const getEvent = async () => {
         try {
             let res
-            if ($userType === 'Manager') {
+            if ($userType === 'Manager' || $userType === 'Participant') {
                 res = await fetch(url + '/events/' + data.id, {
                     headers: { Authorization: 'Bearer ' + localStorage.getItem('token') }
                 })
@@ -50,6 +50,7 @@
     }
 
     let error
+    let errorSub
 
     let categories = [
         { type: 'musica', text: 'Musica' },
@@ -75,6 +76,7 @@
                 if (!json.success) {
                     error = json.message
                 } else {
+                    error = ''
                     promise = getEvent()
                     goto('/evento/' + data.id)
                 }
@@ -87,6 +89,65 @@
             }
         } catch (e) {
             error = 'Internal Error'
+        }
+    }
+
+    async function toggleSubscribe() {
+        try {
+            let subscribed = modifyEvent.subscribed ? 'unsubscribe' : 'subscribe'
+            let res = await fetch(url + `/events/${data.id}/${subscribed}`, {
+                method: 'POST',
+                headers: {
+                    Authorization: 'Bearer ' + localStorage.getItem('token')
+                }
+            })
+            if (res.status === 200) {
+                let json = await res.json()
+
+                if (!json.success) {
+                    errorSub = json.message
+                } else {
+                    errorSub = ''
+                    promise = getEvent()
+                    goto('/evento/' + data.id)
+                }
+            } else if (res.headers.get('content-type').includes('application/json')) {
+                let json = await res.json()
+
+                errorSub = json.message
+            } else {
+                errorSub = 'Internal Error'
+            }
+        } catch (e) {
+            errorSub = 'Internal Error'
+        }
+    }
+
+    async function deleteEvent() {
+        try {
+            let res = await fetch(url + `/events/${data.id}`, {
+                method: 'DELETE',
+                headers: {
+                    Authorization: 'Bearer ' + localStorage.getItem('token')
+                }
+            })
+            if (res.status === 200) {
+                let json = await res.json()
+
+                if (!json.success) {
+                    errorSub = json.message
+                } else {
+                    goto('/')
+                }
+            } else if (res.headers.get('content-type').includes('application/json')) {
+                let json = await res.json()
+
+                errorSub = json.message
+            } else {
+                errorSub = 'Internal Error'
+            }
+        } catch (e) {
+            errorSub = 'Internal Error'
         }
     }
 
@@ -143,7 +204,21 @@
                 </div>
             </div>
             {#if $userType === 'Participant'}
-                <div button colored><div>Iscriviti</div></div>
+                <div
+                    button
+                    colored={event.subscribed ? undefined : true}
+                    on:click|preventDefault={toggleSubscribe}
+                    on:keydown={() => {}}
+                >
+                    <div>{event.subscribed ? 'Disiscriviti' : 'Iscriviti'}</div>
+                </div>
+            {:else if $userType === 'Manager'}
+                <div button on:click|preventDefault={deleteEvent} on:keydown={() => {}}>
+                    <div>Elimina</div>
+                </div>
+            {/if}
+            {#if errorSub}
+                <p style="color: red;">{errorSub}</p>
             {/if}
         </div>
         {#if $userType === 'Manager'}
@@ -224,6 +299,7 @@
     .root {
         display: flex;
         justify-content: space-around;
+        margin-bottom: 5em;
     }
 
     .root.manager {

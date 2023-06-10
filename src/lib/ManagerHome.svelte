@@ -73,7 +73,7 @@
     let promiseInfos = getInfos()
     let delay = (time) => {
         return new Promise((res) => {
-            setTimeout(() => res([]), 5000)
+            setTimeout(() => res([]), time)
         })
     }
 

@@ -2,8 +2,6 @@
     import { convertDate } from './general'
 
     export let event
-
-    $: console.log(event)
 </script>
 
 <a href={'/evento/' + event._id}>
