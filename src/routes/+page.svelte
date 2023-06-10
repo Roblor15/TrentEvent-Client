@@ -2,6 +2,7 @@
     import { getContext, onMount } from 'svelte'
 
     import Event from '../lib/Event.svelte'
+    import Form from '../lib/Form.svelte'
     import ManagerHome from '../lib/ManagerHome.svelte'
     import { url } from '../lib/variables'
 

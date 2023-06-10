@@ -1,11 +1,63 @@
 <script>
     import Event from './Event.svelte'
+    import Form from './Form.svelte'
     import { url } from './variables'
 
     export let isManager = false
     export let id = undefined
 
     let infos
+
+    let password = {
+        old: undefined,
+        new: undefined,
+        newConfermed: undefined
+    }
+
+    let formError
+    let formMessage
+
+    async function changePassword() {
+        if (password.new !== password.newConfermed) {
+            formError = 'Le password inserite sono diverse'
+            return
+        }
+
+        try {
+            let res = await fetch(url + '/users/password', {
+                method: 'PUT',
+                headers: {
+                    Authorization: 'Bearer ' + localStorage.getItem('token'),
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ newPassword: password.new, oldPassword: password.old })
+            })
+
+            if (res.status === 200) {
+                let json = await res.json()
+                if (json.success) {
+                    formError = ''
+                    formMessage = 'Password cambiata'
+                    return
+                } else {
+                    formError = json.message
+                    formMessage = ''
+                    return
+                }
+            }
+            if (res.status === 501) {
+                let json = await res.json()
+                formError = json.message
+
+                return
+            }
+
+            formError = 'Comunicazione fallita'
+        } catch (e) {
+            formMessage = ''
+            formError = e.message
+        }
+    }
 
     async function getInfos() {
         try {
@@ -30,7 +82,9 @@
             }
 
             throw new Error('Comunicazione con il server fallita')
-        } catch (e) {}
+        } catch (e) {
+            throw new Error('Comunicazione con il server fallita')
+        }
     }
 
     async function getEvents() {
@@ -41,12 +95,7 @@
                     headers: { Authorization: 'Bearer ' + localStorage.getItem('token') }
                 })
             } else {
-                res = {
-                    status: 200,
-                    json: () => ({
-                        events: []
-                    })
-                }
+                res = await fetch(url + `/users/managers/${id}/events`)
             }
             if (res.status === 200) {
                 let json = await res.json()
@@ -86,34 +135,65 @@
 
 <div class="container">
     {#await promiseInfos then infos}
-        <div class="dati">
-            <h1>{isManager ? 'I miei dati' : 'Informazioni'}</h1>
-            <div>
+        <div class="container-dati">
+            <div class="dati">
+                <h1>{isManager ? 'I miei dati' : 'Informazioni'}</h1>
                 <div>
-                    <h2>Nome Locale</h2>
-                    <span>{infos.localName}</span>
-                </div>
-                <div>
-                    <h2>Posizione</h2>
-                    <span
-                        >{infos.address.city}, {infos.address.street}
-                        {infos.address.number}</span
-                    >
-                </div>
-                <div>
-                    <h2>Email</h2>
-                    <span>{infos.email}</span>
-                    {#if isManager}
-                        <span class="verified" class:yes={infos.verifiedEmail}>
-                            [{!infos.verifiedEmail ? 'not ' : ''}verified]</span
+                    <div>
+                        <h2>Nome Locale</h2>
+                        <span>{infos.localName}</span>
+                    </div>
+                    <div>
+                        <h2>Posizione</h2>
+                        <span
+                            >{infos.address.city}, {infos.address.street}
+                            {infos.address.number}</span
                         >
-                    {/if}
-                </div>
-                <div>
-                    <h2>Tipo di locale</h2>
-                    <span>{infos.localType}</span>
+                    </div>
+                    <div>
+                        <h2>Email</h2>
+                        <span>{infos.email}</span>
+                        {#if isManager}
+                            <span class="verified" class:yes={infos.verifiedEmail}>
+                                [{!infos.verifiedEmail ? 'not ' : ''}verified]</span
+                            >
+                        {/if}
+                    </div>
+                    <div>
+                        <h2>Tipo di locale</h2>
+                        <span>{infos.localType}</span>
+                    </div>
                 </div>
             </div>
+            <Form on:submit={changePassword}>
+                <p>Cambia password</p>
+                {#if formError}
+                    <p name="error">{formError}</p>
+                {/if}
+                <input
+                    type="password"
+                    required
+                    placeholder="Vecchia password"
+                    bind:value={password.old}
+                />
+                <input
+                    type="password"
+                    required
+                    placeholder="Nuova password"
+                    bind:value={password.new}
+                />
+                <input
+                    required
+                    class:different={password.new !== password.newConfermed}
+                    type="password"
+                    placeholder="Nuova password"
+                    bind:value={password.newConfermed}
+                />
+                {#if formMessage}
+                    <p name="message">{formMessage}</p>
+                {/if}
+                <button type="submit">Cambia</button>
+            </Form>
         </div>
     {:catch error}
         <p>{error.message}</p>
@@ -136,6 +216,14 @@
 </div>
 
 <style>
+    .container {
+        margin-top: 2em;
+    }
+
+    .different {
+        color: red;
+    }
+
     .dati {
         display: flex;
         flex-direction: column;
@@ -160,6 +248,12 @@
 
     .dati .verified.yes {
         color: green;
+    }
+
+    .container-dati {
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
     }
 
     .container-events {

@@ -72,6 +72,14 @@
         text-shadow: none;
     }
 
+    form :global(p[name='message']) {
+        margin: 0;
+        font-size: 0.9em;
+        color: #fff;
+        opacity: 0.7;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
     form :global(a) {
         text-decoration: none;
         color: #ddd;

@@ -43,6 +43,8 @@
             <div class="events">
                 {#each events as event}
                     <Event {event} />
+                {:else}
+                    <p style="color: #fcfcfc; margin-top: 5em;">Non sei iscritto ad alcun evento</p>
                 {/each}
             </div>
         {:catch error}

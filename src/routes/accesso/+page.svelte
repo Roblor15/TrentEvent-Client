@@ -350,11 +350,4 @@
     .selection .active {
         background: #ffc83cc4;
     }
-
-    p[name='message'] {
-        padding: 0 1em;
-        color: #fff;
-        opacity: 0.7;
-        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
-    }
 </style>
