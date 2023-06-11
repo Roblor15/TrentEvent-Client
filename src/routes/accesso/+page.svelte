@@ -320,6 +320,7 @@
         flex-direction: column;
         gap: 100px;
         align-items: center;
+        justify-content: center;
         padding: 3em 0;
         min-height: calc(100% - 6em);
         height: fit-content;
