@@ -9,5 +9,9 @@
 </script>
 
 <div class="container">
-    <ManagerHome id={data.id} isSupervisor={$userType === 'Supervisor'} />
+    {#if $userType === 'Supervisor'}
+        <ManagerHome id={data.id} isSupervisor />
+    {:else}
+        <ManagerHome id={data.id} />
+    {/if}
 </div>

@@ -50,6 +50,11 @@
         text-decoration: none;
     }
 
+    img {
+        max-width: 330px;
+        width: 90vw;
+    }
+
     .container {
         max-width: 330px;
         width: 90vw;
