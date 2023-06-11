@@ -2,6 +2,7 @@
     import Form from '../../lib/Form.svelte'
     import { url } from '../../lib/variables'
     import { getContext } from 'svelte'
+    import { goto } from '$app/navigation'
 
     let userType = getContext('userType')
 
@@ -44,6 +45,7 @@
                     error = json.message
                 } else {
                     error = ''
+                    goto('/')
                 }
             } else if (res.headers.get('content-type').includes('application/json')) {
                 let json = await res.json()
