@@ -128,13 +128,13 @@
 
     async function approvationManager(approved) {
         try {
-            let res = await fetch(url + '/v1/supervisors/manager-approvation/' + id, {
+            let res = await fetch(url + '/supervisors/manager-approvation/' + id, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
                     Authorization: 'Bearer ' + localStorage.getItem('token')
                 },
-                body: JSON.stringify({ approved })
+                body: JSON.stringify({ approved, sendEmail: true })
             })
 
             if (res.status === 200) {
@@ -216,35 +216,37 @@
                     {/if}
                 {/if}
             </div>
-            <Form on:submit={changePassword}>
-                <p>Cambia password</p>
-                {#if formError}
-                    <p name="error">{formError}</p>
-                {/if}
-                <input
-                    type="password"
-                    required
-                    placeholder="Vecchia password"
-                    bind:value={password.old}
-                />
-                <input
-                    type="password"
-                    required
-                    placeholder="Nuova password"
-                    bind:value={password.new}
-                />
-                <input
-                    required
-                    class:different={password.new !== password.newConfermed}
-                    type="password"
-                    placeholder="Nuova password"
-                    bind:value={password.newConfermed}
-                />
-                {#if formMessage}
-                    <p name="message">{formMessage}</p>
-                {/if}
-                <button type="submit">Cambia</button>
-            </Form>
+            {#if isManager}
+                <Form on:submit={changePassword}>
+                    <p>Cambia password</p>
+                    {#if formError}
+                        <p name="error">{formError}</p>
+                    {/if}
+                    <input
+                        type="password"
+                        required
+                        placeholder="Vecchia password"
+                        bind:value={password.old}
+                    />
+                    <input
+                        type="password"
+                        required
+                        placeholder="Nuova password"
+                        bind:value={password.new}
+                    />
+                    <input
+                        required
+                        class:different={password.new !== password.newConfermed}
+                        type="password"
+                        placeholder="Nuova password"
+                        bind:value={password.newConfermed}
+                    />
+                    {#if formMessage}
+                        <p name="message">{formMessage}</p>
+                    {/if}
+                    <button type="submit">Cambia</button>
+                </Form>
+            {/if}
         </div>
     {:catch error}
         <p>{error.message}</p>
@@ -253,7 +255,12 @@
         <div class="container-events">
             <div>
                 <h1>{isManager ? 'I miei eventi' : 'Gli eventi del locale'}</h1>
-                <a href="/crea-evento" button=""><div>Crea un evento</div></a>
+                {#if isManager}
+                    <a href="/crea-evento" button=""><div>Crea un evento</div></a>
+                {/if}
+                {#if events.length === 0}
+                    <h2>Nessun evento caricato</h2>
+                {/if}
             </div>
             <div class="events">
                 {#each events as event (event._id)}
@@ -283,6 +290,10 @@
 
     h1 {
         color: #ff781e;
+    }
+
+    h2 {
+        color: #fcfcfc;
     }
 
     .dati h2 {

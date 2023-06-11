@@ -63,6 +63,7 @@
 
 <div class="container">
     <div>
+        <h1>Managers</h1>
         <div class="selection">
             <button
                 class={type === 'daApprovare' ? 'active' : ''}
@@ -89,7 +90,7 @@
 
         {#await promiseManagers then managers}
             {#each managers as manager}
-                <div>{manager.localName}</div>
+                <a href={'/locale/' + manager._id}>{manager.localName}</a>
             {/each}
         {/await}
     </div>
@@ -103,6 +104,9 @@
 </div>
 
 <style>
+    h1 {
+        color: #fcfcfc;
+    }
     .container {
         display: grid;
         grid-template-columns: 50% 50%;
