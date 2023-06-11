@@ -162,13 +162,17 @@
     }
 
     .oggetto {
+        display: flex;
+        flex-direction: column;
         background-color: #403588;
         display: flex;
         align-items: center;
         justify-content: center;
         width: 300px;
-        height: 60px;
-        border-radius: 30px;
+        min-width: 60px;
+        height: auto;
+        border-radius: 60px;
+        padding-bottom: 20px;
     }
 
     .oggetto p {
