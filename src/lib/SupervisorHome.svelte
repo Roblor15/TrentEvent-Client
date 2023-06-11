@@ -123,6 +123,10 @@
         color: #fcfcfc;
     }
 
+    h2 {
+        margin-bottom: 0.7em;
+    }
+
     .container {
         display: grid;
         grid-template-columns: 50% 50%;
@@ -176,6 +180,6 @@
     }
 
     .oggetto p {
-        padding: 0 10px;
+        padding: 0 30px;
     }
 </style>

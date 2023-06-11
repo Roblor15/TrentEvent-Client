@@ -1,5 +1,4 @@
 <script>
-    import MenuIcon from './MenuIcon.svelte'
     import { page } from '$app/stores'
     import { getContext } from 'svelte'
 
@@ -26,13 +25,14 @@
                 { link: '/', name: 'Home' },
                 { link: '/crea-evento', name: 'Crea evento' }
             ]
+        } else if ($userType === 'Supervisor') {
+            links = [{ link: '/', name: 'Home' }]
         }
     }
 </script>
 
 <nav class="container">
     <div class="menu">
-        <MenuIcon class="menuIcon" active={IconAttivo} />
         <div class="logo">
             <a href="/">
                 <picture>
