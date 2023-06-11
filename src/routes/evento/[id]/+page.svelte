@@ -335,6 +335,8 @@
                     {/if}
                     <label for="segnalazione">Testo</label>
                     <textarea rows="15" bind:value={report} placeholder="Segnalazione" />
+
+                    <button type="submit">Modifica</button>
                 </Form>
             </div>
         {/if}
@@ -352,6 +354,7 @@
         display: flex;
         justify-content: space-around;
         margin-bottom: 5em;
+        margin-top: 3em;
     }
 
     .root.manager {
