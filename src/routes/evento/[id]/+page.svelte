@@ -52,6 +52,8 @@
     let error
     let errorSub
 
+    let message
+
     let categories = [
         { type: 'musica', text: 'Musica' },
         { type: 'discoteca', text: 'Discoteca' },
@@ -59,6 +61,8 @@
         { type: 'al chiuso', text: 'Al chiuso' },
         { type: 'concerto', text: 'Concerto' }
     ]
+
+    let report
 
     async function sendRequest() {
         try {
@@ -77,6 +81,40 @@
                     error = json.message
                 } else {
                     error = ''
+                    promise = getEvent()
+                    goto('/evento/' + data.id)
+                }
+            } else if (res.headers.get('content-type').includes('application/json')) {
+                let json = await res.json()
+
+                error = json.message
+            } else {
+                error = 'Internal Error'
+            }
+        } catch (e) {
+            error = 'Internal Error'
+        }
+    }
+
+    async function sendReport() {
+        try {
+            let res = await fetch(url + '/reports', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: 'Bearer ' + localStorage.getItem('token')
+                },
+                body: JSON.stringify({ reportText: report, eventId: data.id })
+            })
+            if (res.status === 200) {
+                let json = await res.json()
+
+                if (!json.success) {
+                    error = json.message
+                } else {
+                    error = ''
+                    report = ''
+                    message = 'Segnalazione inviata'
                     promise = getEvent()
                     goto('/evento/' + data.id)
                 }
@@ -283,6 +321,20 @@
                     </select>
 
                     <button type="submit">Modifica</button>
+                </Form>
+            </div>
+        {:else if $userType === 'Participant'}
+            <div class="container">
+                <Form on:submit={sendReport}>
+                    <p>Segnala Evento</p>
+                    {#if message}
+                        <p name="message">{message}</p>
+                    {/if}
+                    {#if error}
+                        <p name="error">{error}</p>
+                    {/if}
+                    <label for="segnalazione">Testo</label>
+                    <textarea rows="15" bind:value={report} placeholder="Segnalazione" />
                 </Form>
             </div>
         {/if}

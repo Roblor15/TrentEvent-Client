@@ -90,23 +90,39 @@
 
         {#await promiseManagers then managers}
             {#each managers as manager}
-                <a href={'/locale/' + manager._id}>{manager.localName}</a>
+                <a href={'/locale/' + manager._id}>
+                    <div class="oggetto">
+                        <h2>{manager.localName}</h2>
+                    </div>
+                </a>
             {/each}
         {/await}
     </div>
     <div>
+        <h1>Segnalazioni</h1>
         {#await promiseReports then reports}
             {#each reports as report}
-                <div />
+                <a href={'/evento/' + report.event}>
+                    <div class="oggetto">
+                        <h2>{report.participant}</h2>
+                        <p>{report.reportText}</p>
+                    </div>
+                </a>
             {/each}
         {/await}
     </div>
 </div>
 
 <style>
+    a {
+        color: #ffcd49;
+        text-decoration: none;
+    }
+
     h1 {
         color: #fcfcfc;
     }
+
     .container {
         display: grid;
         grid-template-columns: 50% 50%;
@@ -115,6 +131,7 @@
     .container > div {
         display: flex;
         flex-direction: column;
+        gap: 2em;
         align-items: center;
     }
 
@@ -142,5 +159,19 @@
 
     .selection .active {
         background: #ffc83cc4;
+    }
+
+    .oggetto {
+        background-color: #403588;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 300px;
+        height: 60px;
+        border-radius: 30px;
+    }
+
+    .oggetto p {
+        padding: 0 10px;
     }
 </style>

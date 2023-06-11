@@ -142,9 +142,12 @@
 
                 if (json.success) {
                     supErr = ''
+                    promiseInfos = getInfos()
                     goto('/locale/' + id)
+                    return
                 } else {
                     supErr = json.message
+                    return
                 }
             }
 
