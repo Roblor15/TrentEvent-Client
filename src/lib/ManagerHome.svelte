@@ -63,11 +63,11 @@
         try {
             let res
             if (isManager) {
-                res = await fetch(url + '/users/manager', {
+                res = await fetch(url + '/managers/infos', {
                     headers: { Authorization: 'Bearer ' + localStorage.getItem('token') }
                 })
             } else {
-                res = await fetch(url + '/users/managers/' + id)
+                res = await fetch(url + '/managers/' + id)
             }
 
             if (res.status === 200) {
@@ -91,11 +91,11 @@
         try {
             let res
             if (isManager) {
-                res = await fetch(url + '/users/my-events', {
+                res = await fetch(url + '/managers/my-events', {
                     headers: { Authorization: 'Bearer ' + localStorage.getItem('token') }
                 })
             } else {
-                res = await fetch(url + `/users/managers/${id}/events`)
+                res = await fetch(url + `/managers/${id}/events`)
             }
             if (res.status === 200) {
                 let json = await res.json()

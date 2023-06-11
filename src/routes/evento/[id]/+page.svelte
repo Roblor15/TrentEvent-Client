@@ -62,7 +62,7 @@
 
     async function sendRequest() {
         try {
-            let res = await fetch(url + `/events/${data.id}/modify-event`, {
+            let res = await fetch(url + `/events/${data.id}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -96,7 +96,7 @@
         try {
             let subscribed = modifyEvent.subscribed ? 'unsubscribe' : 'subscribe'
             let res = await fetch(url + `/events/${data.id}/${subscribed}`, {
-                method: 'POST',
+                method: 'PUT',
                 headers: {
                     Authorization: 'Bearer ' + localStorage.getItem('token')
                 }
