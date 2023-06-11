@@ -189,6 +189,10 @@
         >
     </div>
 
+    {#if message}
+        <p name="message">{message}</p>
+    {/if}
+
     <Form on:submit={sendRequest}>
         {#if type === 'login'}
             <div>
@@ -308,9 +312,6 @@
         {/if}
         <button type="submit">Submit</button>
     </Form>
-    {#if message}
-        <p name="message">{message}</p>
-    {/if}
 </div>
 
 <style>

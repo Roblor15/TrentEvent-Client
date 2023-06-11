@@ -336,7 +336,7 @@
                     <label for="segnalazione">Testo</label>
                     <textarea rows="15" bind:value={report} placeholder="Segnalazione" />
 
-                    <button type="submit">Modifica</button>
+                    <button type="submit">Invia</button>
                 </Form>
             </div>
         {/if}
