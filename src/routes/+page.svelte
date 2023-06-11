@@ -4,6 +4,7 @@
     import Event from '../lib/Event.svelte'
     import Form from '../lib/Form.svelte'
     import ManagerHome from '../lib/ManagerHome.svelte'
+    import SupervisorHome from '../lib/SupervisorHome.svelte'
     import { url } from '../lib/variables'
 
     let userType = getContext('userType')
@@ -29,6 +30,8 @@
 <div class="container">
     {#if $userType === 'Manager'}
         <ManagerHome isManager />
+    {:else if $userType === 'Supervisor'}
+        <SupervisorHome />
     {:else}
         <div class="events">
             {#each events as event (event._id)}

@@ -1,12 +1,15 @@
 <script>
     import { convertDate } from './general'
+    import { url } from './variables'
 
     export let event
+
+    let photo = event.photos.length > 0 ? event.photos[0] : ''
 </script>
 
 <a href={'/evento/' + event._id}>
     <div class="container">
-        <img src="" alt="Foto del locale" />
+        <img src={url + '/photos/' + photo} alt="Foto del locale" />
         <div class="info">
             <div>
                 <h1>{event.name}</h1>

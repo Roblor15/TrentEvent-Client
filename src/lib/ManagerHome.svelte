@@ -1,8 +1,11 @@
 <script>
+    import { goto } from '$app/navigation'
+
     import Event from './Event.svelte'
     import Form from './Form.svelte'
     import { url } from './variables'
 
+    export let isSupervisor = false
     export let isManager = false
     export let id = undefined
 
@@ -66,6 +69,10 @@
                 res = await fetch(url + '/managers/infos', {
                     headers: { Authorization: 'Bearer ' + localStorage.getItem('token') }
                 })
+            } else if (isSupervisor) {
+                res = await fetch(url + '/managers/' + id, {
+                    headers: { Authorization: 'Bearer ' + localStorage.getItem('token') }
+                })
             } else {
                 res = await fetch(url + '/managers/' + id)
             }
@@ -119,6 +126,36 @@
         }
     }
 
+    async function approvationManager(approved) {
+        try {
+            let res = await fetch(url + '/v1/supervisors/manager-approvation/' + id, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: 'Bearer ' + localStorage.getItem('token')
+                },
+                body: JSON.stringify({ approved })
+            })
+
+            if (res.status === 200) {
+                let json = await res.json()
+
+                if (json.success) {
+                    supErr = ''
+                    goto('/locale/' + id)
+                } else {
+                    supErr = json.message
+                }
+            }
+
+            supErr = 'Errore di comunicazione con i server'
+        } catch (e) {
+            supErr = 'Errore di comunicazione con i server'
+        }
+    }
+
+    let supErr = ''
+
     let promiseInfos = getInfos()
     let delay = (time) => {
         return new Promise((res) => {
@@ -164,6 +201,20 @@
                         <span>{infos.localType}</span>
                     </div>
                 </div>
+                {#if isSupervisor}
+                    <div
+                        button
+                        on:click|preventDefault={async () => {
+                            await approvationManager(!infos.approvation?.approved)
+                        }}
+                        on:keydown={() => {}}
+                    >
+                        <div>{infos.approvation?.approved ? 'Revoca' : 'Approva'}</div>
+                    </div>
+                    {#if supErr}
+                        <p style="color: red;">{supErr}</p>
+                    {/if}
+                {/if}
             </div>
             <Form on:submit={changePassword}>
                 <p>Cambia password</p>
@@ -353,5 +404,54 @@
         .events {
             grid-template-columns: max-content max-content max-content max-content;
         }
+    }
+
+    *[button] {
+        padding: 3px;
+        background-color: #272e3c;
+        box-shadow: 0 0 120px var(--generate-button-shadow-wide, transparent),
+            0 4px 12px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.1),
+            inset 0 1px 1px var(--generate-button-shadow-inset, rgba(255, 255, 255, 0.1)),
+            0 0 0 var(--generate-button-shadow-outline, 0) rgba(109, 68, 244, 0.4);
+        height: auto;
+        display: flex;
+        white-space: nowrap;
+        border-radius: 50px;
+        border: none;
+        cursor: pointer;
+        font-weight: 600;
+        align-items: center;
+        justify-content: center;
+        letter-spacing: 0.005em;
+        transform: scale(0.8);
+        transition: transform 0.3s, background-color 3s, box-shadow 0.3s;
+        line-height: 26px;
+    }
+
+    *[button]:hover {
+        transform: scale(1);
+        --generate-button-shadow-inset: rgba(255, 255, 255, 0.7);
+        background: linear-gradient(-60deg, var(--navtext-color-underline), #ff3c00);
+        box-shadow: 0 0 30px #ff3c0079, 0 4px 12px rgba(0, 0, 0, 0.05),
+            0 0 0 4px rgba(150, 0, 255, 0.3),
+            inset 0 1px 1px var(--generate-button-shadow-inset, rgba(255, 255, 255, 0.1)),
+            0 0 0 var(--generate-button-shadow-outline, 0) rgba(109, 68, 244, 0.4);
+    }
+
+    *[button]:hover div {
+        color: var(--navtext-color-selected);
+    }
+
+    *[button] div {
+        color: var(--navtext-color);
+        width: 100%;
+        height: 100%;
+        display: flex;
+        padding: 13px 25px;
+        border-radius: 50px;
+        align-items: center;
+        justify-content: center;
+        font-size: large;
+        transition: color 0.3s;
     }
 </style>
